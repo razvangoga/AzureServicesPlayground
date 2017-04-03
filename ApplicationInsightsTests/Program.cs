@@ -12,7 +12,7 @@ namespace ApplicationInsightsTests
     {
         static void Main(string[] args)
         {
-            string ikey = "416d0687-c13b-42b8-9cbb-5aa7c257b08f";
+            string ikey = "";
 
             TelemetryConfiguration.Active.InstrumentationKey = ikey;
             TelemetryConfiguration.Active.TelemetryChannel.DeveloperMode = true;
