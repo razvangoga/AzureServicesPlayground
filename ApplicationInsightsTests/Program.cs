@@ -1,4 +1,5 @@
-﻿using Microsoft.ApplicationInsights.Extensibility;
+﻿using Microsoft.ApplicationInsights;
+using Microsoft.ApplicationInsights.Extensibility;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -12,7 +13,7 @@ namespace ApplicationInsightsTests
     {
         static void Main(string[] args)
         {
-            string ikey = "";
+            string ikey = "ai integration key";
 
             TelemetryConfiguration.Active.InstrumentationKey = ikey;
             TelemetryConfiguration.Active.TelemetryChannel.DeveloperMode = true;
@@ -27,6 +28,25 @@ namespace ApplicationInsightsTests
             //TraceSource ts = new TraceSource("My Verbose Debugger") { Switch = { Level = SourceLevels.All } };
             //ts.TraceData(TraceEventType.Verbose, 0, $"{key} - verbose");
             //ts.Flush();
+            TelemetryClient telemetry = new TelemetryClient();
+
+            for (int i = 0; i < 20; i++)
+            {
+                var startTime = DateTime.UtcNow;
+                var timer = Stopwatch.StartNew();
+                try
+                {
+                    Wrapper wrapper = new Wrapper();
+                    wrapper.WrapWork();
+                }
+                finally
+                {
+                    timer.Stop();
+                    telemetry.TrackDependency("myDependency", "myCall", startTime, timer.Elapsed, true);
+                }
+
+                Console.WriteLine(i);
+            }
 
             Console.WriteLine("Done...");
             Console.ReadKey();
